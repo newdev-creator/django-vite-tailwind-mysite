@@ -1,8 +1,22 @@
-import _ from 'lodash';
+// Import HTMX
+import htmx from 'htmx.org';
 
-function component() {
-  const element = document.createElement('div');
-  element.innerHTML =  _.join(['Hello', 'lodash'], ' ');
-  return element;
-}
-document.body.appendChild(component());
+// Import Alpine.js
+import Alpine from 'alpinejs';
+
+// Rendre HTMX disponible globalement
+window.htmx = htmx;
+
+// Initialiser Alpine.js
+window.Alpine = Alpine;
+Alpine.start();
+
+// Configuration HTMX (optionnel)
+document.addEventListener('DOMContentLoaded', () => {
+  // Configuration HTMX
+  htmx.config.defaultSwapStyle = 'innerHTML';
+  htmx.config.defaultSwapDelay = 0;
+  htmx.config.defaultSettleDelay = 20;
+  
+  console.log('HTMX et Alpine.js initialisés');
+});

@@ -1,1 +1,44 @@
-@import 'tailwindcss';
+@import "tailwindcss";
+@plugin "daisyui";
+
+/* Configuration Tailwind v4 inline */
+@theme {
+  /* Ajoutez vos personnalisations ici si nécessaire */
+}
+
+/* Source pour le scanning des classes */
+@source "../../templates";
+@source "../**/*.js";
+
+/* Styles personnalisés pour HTMX */
+@layer components {
+  /* Indicateur de chargement HTMX */
+  .htmx-indicator {
+    opacity: 0;
+    transition: opacity 200ms ease-in;
+  }
+
+  .htmx-request .htmx-indicator,
+  .htmx-request.htmx-indicator {
+    opacity: 1;
+  }
+
+  /* Animation de swap HTMX */
+  .htmx-swapping {
+    opacity: 0;
+    transition: opacity 150ms ease-out;
+  }
+
+  .htmx-settling {
+    opacity: 1;
+    transition: opacity 150ms ease-in;
+  }
+}
+
+/* Optimisations de performance */
+@layer utilities {
+  .gpu-accelerated {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+}
