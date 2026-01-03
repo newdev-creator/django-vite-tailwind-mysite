@@ -1,15 +1,16 @@
 {% load django_vite %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr" data-theme="light">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Getting Started with Django and Vite{% endblock %}</title>
+    <title>{% block title %}Julien Freisa{% endblock %}</title>
     {% vite_hmr_client %}
     <link rel="stylesheet" href="{% vite_asset_url 'assets/style.css' %}">
     {% block extra_head %}{% endblock %}
   </head>
   <body>
     {% block content %}{% endblock %}
+    {% vite_asset 'assets/index.js' %}
   </body>
 </html>
