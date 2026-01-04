@@ -1,35 +1,35 @@
-# Dockerfile for Django + Vite + Tailwind deployment on Coolify
+FROM python:3.12-alpine3.21
 
-# Use official Python image as base
-FROM python:3.12-slim
-
-# Set environment variables
+ENV PIP_DISABLE_PIP_VERSION_CHECK 1
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-ENV PIP_NO_CACHE_DIR=off
-ENV PIP_DISABLE_PIP_VERSION_CHECK=on
-ENV PIP_DEFAULT_TIMEOUT=100
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    curl \
+WORKDIR /code
+
+# Install system dependencies for Node.js and build tools
+RUN apk add --no-cache \
+    bash \
+    build-base \
     gcc \
     git \
-    libpq-dev \
+    libffi-dev \
+    musl-dev \
     nodejs \
     npm \
-    && rm -rf /var/lib/apt/lists/*
+    openssl-dev \
+    postgresql-dev \
+    python3-dev
 
-# Create and set working directory
-WORKDIR /app
-
-# Copy requirements first to leverage Docker cache
+# Copy pyproject.toml for dependency installation
 COPY pyproject.toml ./
 
 # Install Python dependencies
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -e .
+
+# Copy entrypoint script
+COPY entrypoint.prod.sh .
+RUN chmod +x /code/entrypoint.prod.sh
 
 # Copy the rest of the application
 COPY . .
@@ -40,11 +40,4 @@ RUN npm install
 # Build Vite assets
 RUN npm run build
 
-# Collect static files
-RUN python manage.py collectstatic --noinput
-
-# Expose the port the app runs on
-EXPOSE 8000
-
-# Command to run the application
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "4", "--timeout", "300", "project.wsgi:application"]
+ENTRYPOINT ["/code/entrypoint.prod.sh"]

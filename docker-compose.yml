@@ -1,28 +1,26 @@
-version: '3.8'
+version: "3.9"
 
 services:
-  web:
-    build: .
-    container_name: django-vite-app
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: django-vite-app
     restart: unless-stopped
-    env_file:
-      - .env.production
+    command: gunicorn --workers=3 project.wsgi:application --bind 0.0.0.0:8000
+    expose:
+      - 8000
+    volumes:
+      - static_volume:/code/staticfiles
+      - ./:/code
     environment:
       - DEBUG=False
       - DJANGO_VITE_DEV_MODE=False
-    ports:
-      - "8000:8000"
-    volumes:
-      - static_volume:/app/staticfiles
-      - ./:/app
     depends_on:
       - db
-    networks:
-      - app_network
 
   db:
     image: postgres:15-alpine
-    container_name: postgres-db
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-django_db}
@@ -30,15 +28,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-django_password}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    networks:
-      - app_network
 
 volumes:
   static_volume:
   postgres_data:
-
-networks:
-  app_network:
-    driver: bridge

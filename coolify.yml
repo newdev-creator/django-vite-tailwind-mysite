@@ -3,7 +3,7 @@ version: 1.0.0
 description: Django with Vite and Tailwind CSS application
 
 services:
-  - name: web
+  - name: webapp
     build:
       context: .
       dockerfile: Dockerfile
@@ -16,10 +16,13 @@ services:
       - SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
       - ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}
       - CSRF_TRUSTED_ORIGINS=${{ secrets.CSRF_TRUSTED_ORIGINS }}
+      - POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+      - POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+      - POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
     depends_on:
       - db
     volumes:
-      - static_volume:/app/staticfiles
+      - static_volume:/code/staticfiles
     
   - name: db
     image: postgres:15-alpine
@@ -65,5 +68,3 @@ deployment:
       - name: Build and deploy
         command: |
           docker-compose -f docker-compose.yml up -d --build
-          docker-compose -f docker-compose.yml exec web python manage.py migrate
-          docker-compose -f docker-compose.yml exec web python manage.py collectstatic --noinput
