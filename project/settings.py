@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-import os
 import environ
 
 from pathlib import Path
@@ -22,7 +21,23 @@ DEBUG = env('DEBUG', default='False').lower() in ('true', '1', 't')
 SECRET_KEY = env('django_secret_key', default='django-insecure-c0d=s1x9z*e)lo&^)26i_+ina3&le2c_$$2p7hgsp*ytn8orqh')
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['http://127.0.0.1'])
-SITE_ID = 1
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+
+# Security settings for production
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=True)
+    SESSION_COOKIE_SECURE = env.bool('SESSION_COOKIE_SECURE', default=True)
+    CSRF_COOKIE_SECURE = env.bool('CSRF_COOKIE_SECURE', default=True)
+    SECURE_HSTS_SECONDS = env.int('SECURE_HSTS_SECONDS', default=31536000)
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=True)
+    SECURE_HSTS_PRELOAD = env.bool('SECURE_HSTS_PRELOAD', default=True)
+    SECURE_CONTENT_TYPE_NOSNIFF = env.bool('SECURE_CONTENT_TYPE_NOSNIFF', default=True)
+    SECURE_BROWSER_XSS_FILTER = env.bool('SECURE_BROWSER_XSS_FILTER', default=True)
+    X_FRAME_OPTIONS = env('X_FRAME_OPTIONS', default='DENY')
+
 
 # Application definition
 
@@ -32,10 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    "django.contrib.sites",
-    "django.contrib.sitemaps",
     'django.contrib.staticfiles',
-    'accounts.apps.AccountsConfig',
     'django_vite',
 ]
 
@@ -84,25 +96,8 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# sqlite
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / 'data' / "db.sqlite3",
-        "OPTIONS": {
-            "init_command": (
-                "PRAGMA foreign_keys=ON;"
-                "PRAGMA journal_mode = WAL;"
-                "PRAGMA synchronous = NORMAL;"
-                "PRAGMA busy_timeout = 5000;"
-                "PRAGMA temp_store = MEMORY;"
-                "PRAGMA mmap_size = 134217728;"
-                "PRAGMA journal_size_limit = 67108864;"
-                "PRAGMA cache_size = 2000;"
-            ),
-            "transaction_mode": "IMMEDIATE",
-        },
-    }
+    'default': env.db('DATABASE_URL', default=f'sqlite:///{BASE_DIR / "db.sqlite3"}')
 }
 
 
@@ -147,9 +142,6 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
-
 STORAGES = {
     # ...
     "staticfiles": {
@@ -157,7 +149,6 @@ STORAGES = {
     },
 }
 
-AUTH_USER_MODEL = 'accounts.CustomUser'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -167,35 +158,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DJANGO_VITE = {
   "default": {
-    "dev_mode": True
+    "dev_mode": env.bool('DJANGO_VITE_DEV_MODE', default=DEBUG)
   }
-}
-
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "default": {
-            "format": "[{asctime}] {levelname} {name}: {message}",
-            "style": "{",
-            "datefmt": "%Y-%m-%d %H:%M:%S",
-        },
-        "verbose": {
-            "format": "[{asctime}] {levelname} {name} [{module}:{lineno}] - {message}",
-            "style": "{",
-            "datefmt": "%Y-%m-%d %H:%M:%S",
-        },
-    },
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-            "formatter": "default",
-        },
-    },
-    "loggers": {
-        "service_providers": {
-            "handlers": ["console"],
-            "level": "DEBUG" if DEBUG else "INFO",
-        },
-    },
 }

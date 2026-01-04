@@ -1,1 +1,0 @@
-import{h as e}from"./htmx-CXo84kJZ.js";import{m as t}from"./alpine-BLrUkf4X.js";window.htmx=e,window.Alpine=t,t.start(),document.addEventListener("DOMContentLoaded",()=>{e.config.defaultSwapStyle="innerHTML",e.config.defaultSwapDelay=0,e.config.defaultSettleDelay=20});

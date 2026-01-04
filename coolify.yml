@@ -1,0 +1,69 @@
+name: django-vite-tailwind-app
+version: 1.0.0
+description: Django with Vite and Tailwind CSS application
+
+services:
+  - name: web
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    environment:
+      - DEBUG=False
+      - DJANGO_VITE_DEV_MODE=False
+      - DATABASE_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@db:5432/${{ secrets.POSTGRES_DB }}
+      - SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
+      - ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}
+      - CSRF_TRUSTED_ORIGINS=${{ secrets.CSRF_TRUSTED_ORIGINS }}
+    depends_on:
+      - db
+    volumes:
+      - static_volume:/app/staticfiles
+    
+  - name: db
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  - name: static_volume
+  - name: postgres_data
+
+secrets:
+  - name: DJANGO_SECRET_KEY
+    description: Django secret key for production
+    required: true
+  - name: POSTGRES_DB
+    description: PostgreSQL database name
+    required: true
+    default: django_db
+  - name: POSTGRES_USER
+    description: PostgreSQL username
+    required: true
+    default: django_user
+  - name: POSTGRES_PASSWORD
+    description: PostgreSQL password
+    required: true
+  - name: ALLOWED_HOSTS
+    description: Comma-separated list of allowed hosts
+    required: true
+    default: your-domain.com,localhost
+  - name: CSRF_TRUSTED_ORIGINS
+    description: Comma-separated list of trusted origins for CSRF
+    required: true
+    default: https://your-domain.com
+
+deployment:
+  - name: production
+    environment: production
+    commands:
+      - name: Build and deploy
+        command: |
+          docker-compose -f docker-compose.yml up -d --build
+          docker-compose -f docker-compose.yml exec web python manage.py migrate
+          docker-compose -f docker-compose.yml exec web python manage.py collectstatic --noinput

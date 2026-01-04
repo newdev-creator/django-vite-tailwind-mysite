@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: django-vite-app
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    environment:
+      - DEBUG=False
+      - DJANGO_VITE_DEV_MODE=False
+    ports:
+      - "8000:8000"
+    volumes:
+      - static_volume:/app/staticfiles
+      - ./:/app
+    depends_on:
+      - db
+    networks:
+      - app_network
+
+  db:
+    image: postgres:15-alpine
+    container_name: postgres-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-django_db}
+      POSTGRES_USER: ${POSTGRES_USER:-django_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-django_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - app_network
+
+volumes:
+  static_volume:
+  postgres_data:
+
+networks:
+  app_network:
+    driver: bridge

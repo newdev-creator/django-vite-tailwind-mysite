@@ -1,27 +1,20 @@
 {
-  "_alpine-BLrUkf4X.js": {
-    "file": "js/alpine-BLrUkf4X.js",
-    "name": "alpine"
-  },
-  "_htmx-CXo84kJZ.js": {
-    "file": "js/htmx-CXo84kJZ.js",
-    "name": "htmx"
+  "assets/hello.jsx": {
+    "file": "js/hello-bundle.js",
+    "name": "hello",
+    "src": "assets/hello.jsx",
+    "isEntry": true
   },
   "assets/index.js": {
-    "file": "js/index-BBvnorF1.js",
+    "file": "js/index-bundle.js",
     "name": "index",
     "src": "assets/index.js",
-    "isEntry": true,
-    "imports": [
-      "_htmx-CXo84kJZ.js",
-      "_alpine-BLrUkf4X.js"
-    ]
+    "isEntry": true
   },
   "assets/style.css": {
-    "file": "css/style-r6ZXEu6y.css",
+    "file": "css/style.css",
     "src": "assets/style.css",
     "isEntry": true,
-    "name": "style",
     "names": [
       "style.css"
     ]
