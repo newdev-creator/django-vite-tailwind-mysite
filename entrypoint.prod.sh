@@ -23,7 +23,14 @@ echo 'Building Vite assets...'
 npm run build
 
 # Copy Vite manifest to staticfiles directory for Django
-cp -f static/manifest.json staticfiles/manifest.json
+if [ -f static/manifest.json ]; then
+    cp -f static/manifest.json staticfiles/manifest.json
+    echo "Vite manifest copied successfully"
+else
+    echo "ERROR: Vite manifest not found!"
+    ls -la static/
+    exit 1
+fi
 
 echo 'Starting Gunicorn...'
 exec gunicorn --workers=3 project.wsgi:application --bind 0.0.0.0:8000
