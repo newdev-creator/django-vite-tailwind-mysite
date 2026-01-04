@@ -7,15 +7,16 @@ services:
       dockerfile: Dockerfile
     image: django-vite-app
     restart: unless-stopped
-    command: gunicorn --workers=3 project.wsgi:application --bind 0.0.0.0:8000
     expose:
       - 8000
     volumes:
       - static_volume:/code/staticfiles
-      - ./:/code
     environment:
       - DEBUG=False
       - DJANGO_VITE_DEV_MODE=False
+      - POSTGRES_DB=${POSTGRES_DB:-django_db}
+      - POSTGRES_USER=${POSTGRES_USER:-django_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-django_password}
     depends_on:
       - db
 
