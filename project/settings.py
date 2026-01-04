@@ -9,46 +9,23 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-import environ
 
 from pathlib import Path
-env = environ.Env()
-environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-DEBUG = env('DEBUG', default='False').lower() in ('true', '1', 't')
-SECRET_KEY = env('django_secret_key', default='django-insecure-c0d=s1x9z*e)lo&^)26i_+ina3&le2c_$$2p7hgsp*ytn8orqh')
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
-CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['http://127.0.0.1', 'http://localhost'])
 
-# Add security settings for production
-if not DEBUG:
-    CSRF_COOKIE_SECURE = True
-    SESSION_COOKIE_SECURE = True
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    SECURE_HSTS_SECONDS = 31536000  # 1 year
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SECURE_SSL_REDIRECT = True
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-# Security settings for production
-if not DEBUG:
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=True)
-    SESSION_COOKIE_SECURE = env.bool('SESSION_COOKIE_SECURE', default=True)
-    CSRF_COOKIE_SECURE = env.bool('CSRF_COOKIE_SECURE', default=True)
-    SECURE_HSTS_SECONDS = env.int('SECURE_HSTS_SECONDS', default=31536000)
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=True)
-    SECURE_HSTS_PRELOAD = env.bool('SECURE_HSTS_PRELOAD', default=True)
-    SECURE_CONTENT_TYPE_NOSNIFF = env.bool('SECURE_CONTENT_TYPE_NOSNIFF', default=True)
-    SECURE_BROWSER_XSS_FILTER = env.bool('SECURE_BROWSER_XSS_FILTER', default=True)
-    X_FRAME_OPTIONS = env('X_FRAME_OPTIONS', default='DENY')
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'django-insecure-*o64exefo=9l#**1ravny@knp_=_(=oodqt-#icif7r+9dbg+f'
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -61,29 +38,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_vite',
+    'django_browser_reload',
 ]
-
-if DEBUG:
-    # Add django_browser_reload only in DEBUG mode
-    INSTALLED_APPS += ["django_browser_reload"]
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_browser_reload.middleware.BrowserReloadMiddleware',
 ]
-
-if DEBUG:
-    # Add django_browser_reload middleware only in DEBUG mode
-    MIDDLEWARE += [
-        "django_browser_reload.middleware.BrowserReloadMiddleware",
-    ]
 
 ROOT_URLCONF = 'project.urls'
 
@@ -109,7 +76,10 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': env.db('DATABASE_URL', default=f'sqlite:///{BASE_DIR / "db.sqlite3"}')
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 
@@ -135,9 +105,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'fr-fr'
+LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Europe/Paris'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -147,19 +117,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = BASE_DIR / "static_root"
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
-
-STORAGES = {
-    # ...
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
 
 
 # Default primary key field type
@@ -170,6 +133,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DJANGO_VITE = {
   "default": {
-    "dev_mode": env.bool('DJANGO_VITE_DEV_MODE', default=DEBUG)
+    "dev_mode": True
   }
 }

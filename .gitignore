@@ -3,25 +3,6 @@ node_modules
 db.sqlite3
 *~
 
-# Environment files
-.env
-.env.production
-
-# IDE files
-.idea/
-.vscode/
-
-# Python virtual environment
-.venv/
-venv/
-
-# Build artifacts
 static/js/
 static/css/
 static/manifest.json
-
-# Deployment configuration files (should be committed)
-!Dockerfile
-!docker-compose.yml
-!coolify.yml
-!DEPLOYMENT.md
