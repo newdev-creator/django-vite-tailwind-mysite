@@ -1,0 +1,38 @@
+[variables]
+NIXPACKS_METADATA = 'python,django,bun'
+UV_DEFAULT_TIMEOUT = '101'
+UV_DISABLE_PIP_VERSION_CHECK = '1'
+UV_NO_CACHE_DIR = '1'
+PYTHONDONTWRITEBYTECODE = '1'
+PYTHONFAULTHANDLER = '1'
+PYTHONHASHSEED = 'random'
+PYTHONUNBUFFERED = '1'
+DJANGO_VITE_DEV_MODE = 'False'
+DEBUG = 'False'
+
+[phases.install]
+dependsOn = ['setup']
+cmds = [
+  'uv pip install --upgrade uv',
+  'uv pip install -e .',
+  'bun install',
+  'bun run build'
+]
+cacheDirectories = ['/root/.cache/uv', '/root/.bun']
+paths = ['/opt/venv/bin']
+
+[phases.setup]
+nixPkgs = [
+  'python3',
+  'bun',
+  'gcc',
+  'sqlite'
+]
+nixLibs = [
+  'zlib',
+  'stdenv.cc.cc.lib',
+  'openssl'
+]
+
+[start]
+cmd = 'python manage.py collectstatic --no-input --clear && python manage.py migrate --noinput && gunicorn project.wsgi:application --workers 3 --bind 0.0.0.0:8000'
