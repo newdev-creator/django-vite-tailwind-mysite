@@ -33,6 +33,7 @@ RUN pip install --upgrade pip && \
 
 # Copy specific files and directories (excluding entrypoint to avoid overwrite)
 COPY manage.py ./
+COPY main.py ./
 COPY project/ ./project/
 COPY assets/ ./assets/
 COPY static/ ./static/
@@ -43,7 +44,6 @@ COPY vite.config.js ./
 COPY .env.production ./
 COPY README.md ./
 COPY LICENSE ./
-COPY scripts/ ./scripts/
 
 # Install Node.js dependencies
 RUN npm install
