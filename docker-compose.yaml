@@ -28,4 +28,3 @@ services:
 volumes:
   sqlite_volume:
   media_volume:
-  sqlite_volume:

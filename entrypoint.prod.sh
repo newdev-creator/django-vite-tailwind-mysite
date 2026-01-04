@@ -8,15 +8,11 @@ echo "========================================"
 
 # Create necessary directories
 echo "Creating directories..."
-mkdir -p /code/static_root /code/mediafiles /code/dynamic
+mkdir -p /code/data /code/static_root /code/mediafiles /code/dynamic
 
-# Ensure db.sqlite3 directory exists
-touch /code/db.sqlite3 || true
-
-# Set permissions
+# Set proper permissions for database directory
 echo "Setting permissions..."
-chmod -R 755 /code/static_root /code/mediafiles /code/dynamic
-chmod 644 /code/db.sqlite3 2>/dev/null || true
+chmod -R 755 /code/data
 
 # Wait for database if PostgreSQL is configured
 if [ -n "$POSTGRES_HOST" ]; then
