@@ -1,38 +1,24 @@
+# nixpacks.toml - Django (uv) + Vite (React/Tailwind avec bun)
+
+# Force les providers : Python en premier (pour uv), puis Node pour bun/Vite
+providers = ["python", "node"]
+
+# Bun est supporté nativement par Nixpacks (super rapide !)
 [variables]
-NIXPACKS_METADATA = 'python,django,bun'
-UV_DEFAULT_TIMEOUT = '101'
-UV_DISABLE_PIP_VERSION_CHECK = '1'
-UV_NO_CACHE_DIR = '1'
-PYTHONDONTWRITEBYTECODE = '1'
-PYTHONFAULTHANDLER = '1'
-PYTHONHASHSEED = 'random'
-PYTHONUNBUFFERED = '1'
-DJANGO_VITE_DEV_MODE = 'False'
-DEBUG = 'False'
+NIXPACKS_NODE_VERSION = "20"  # Optionnel, mais stable pour bun
 
-[phases.install]
-dependsOn = ['setup']
+# Phase de build :
+# 1. Build Vite avec bun (output dans ./static comme configuré dans vite.config.js)
+# 2. Migrations Django
+# 3. Collectstatic (WhiteNoise s'en occupera en prod)
+[phases.build]
 cmds = [
-  'uv pip install --upgrade uv',
-  'uv pip install -e .',
-  'bun install',
-  'bun run build'
-]
-cacheDirectories = ['/root/.cache/uv', '/root/.bun']
-paths = ['/opt/venv/bin']
-
-[phases.setup]
-nixPkgs = [
-  'python3',
-  'bun',
-  'gcc',
-  'sqlite'
-]
-nixLibs = [
-  'zlib',
-  'stdenv.cc.cc.lib',
-  'openssl'
+  "bun install",                  # Installe les deps frontend
+  "bun run build",                # Équivalent à vite build → output dans ./static
+  "python manage.py migrate",
+  "python manage.py collectstatic --noinput"
 ]
 
+# Start : Gunicorn + WhiteNoise pour servir les statics (y compris ceux de Vite)
 [start]
-cmd = 'python manage.py collectstatic --no-input --clear && python manage.py migrate --noinput && gunicorn project.wsgi:application --workers 3 --bind 0.0.0.0:8000'
+cmd = "gunicorn project.wsgi:application --bind 0.0.0.0:$PORT"  # Remplace vite_demo par le nom de ton projet Django
