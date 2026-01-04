@@ -12,13 +12,10 @@ services:
     environment:
       - DEBUG=False
       - DJANGO_VITE_DEV_MODE=False
-      - DATABASE_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@db:5432/${{ secrets.POSTGRES_DB }}
+      - DATABASE_URL=postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@db:5432/${{ secrets.POSTGRES_DB }}
       - SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
       - ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}
       - CSRF_TRUSTED_ORIGINS=${{ secrets.CSRF_TRUSTED_ORIGINS }}
-      - POSTGRES_DB=${{ secrets.POSTGRES_DB }}
-      - POSTGRES_USER=${{ secrets.POSTGRES_USER }}
-      - POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
     depends_on:
       - db
     volumes:

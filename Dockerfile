@@ -10,10 +10,12 @@ WORKDIR /code
 RUN apk add --no-cache \
     bash \
     build-base \
+    busybox-extras \
     gcc \
     git \
     libffi-dev \
     musl-dev \
+    netcat-openbsd \
     nodejs \
     npm \
     openssl-dev \
