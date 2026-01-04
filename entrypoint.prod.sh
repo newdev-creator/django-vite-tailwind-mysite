@@ -8,7 +8,7 @@ echo "========================================"
 
 # Create necessary directories
 echo "Creating directories..."
-mkdir -p /code/data /code/static_root /code/mediafiles /code/dynamic
+mkdir -p /code/data /code/staticfiles /code/mediafiles /code/dynamic
 
 # Set proper permissions for database directory
 echo "Setting permissions..."

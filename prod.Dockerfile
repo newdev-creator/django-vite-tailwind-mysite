@@ -51,7 +51,7 @@ COPY --from=frontend-builder /frontend/static ./static
 
 # Create necessary directories with proper permissions
 RUN mkdir -p /code/data \
-    /code/static_root \
+    /code/staticfiles \
     /code/mediafiles \
     /code/dynamic && \
     chmod -R 755 /code
