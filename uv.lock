@@ -51,6 +51,15 @@ wheels = [
 ]
 
 [[package]]
+name = "django-environ"
+version = "0.12.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d6/04/65d2521842c42f4716225f20d8443a50804920606aec018188bbee30a6b0/django_environ-0.12.0.tar.gz", hash = "sha256:227dc891453dd5bde769c3449cf4a74b6f2ee8f7ab2361c93a07068f4179041a", size = 56804 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/83/b3/0a3bec4ecbfee960f39b1842c2f91e4754251e0a6ed443db9fe3f666ba8f/django_environ-0.12.0-py2.py3-none-any.whl", hash = "sha256:92fb346a158abda07ffe6eb23135ce92843af06ecf8753f43adf9d2366dcc0ca", size = 19957 },
+]
+
+[[package]]
 name = "django-vite"
 version = "3.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -60,6 +69,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/23/fe/4be07f538bbf9bf8bf73b045552ec2a1b4fba67e3176abb30490b643368e/django_vite-3.1.0.tar.gz", hash = "sha256:8b4ffe4a9fa81ff568bfb195e74dde8694aaf13fd4b656ae60bf59cce08b85e8", size = 25434 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/30/59/7df4b1077fa41b43b4e542696d75138dbb86a65f44248c607b3e0f1014ce/django_vite-3.1.0-py3-none-any.whl", hash = "sha256:4e46572bd6b1ce70784be129205dc2ffcbc7a3c19fea50bebfb72b327bbde5fc", size = 23579 },
+]
+
+[[package]]
+name = "lucide"
+version = "1.1.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d3/18/466c33b2ebbb63f74496abad1038452bc46b6050decdb2110681c2de5a16/lucide-1.1.3.tar.gz", hash = "sha256:a931b627bc30a529c7f4e57d7b4c2d7379a86a75a4156eb4ced411aa66c1202f", size = 385756 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a6/77/8ac5fda43469c96630dd81817df7362c72cff671f93950a780ad3b13e7e9/lucide-1.1.3-py3-none-any.whl", hash = "sha256:37c9cd5ac3914577b933896dcc4160631aa63a078b7b0a1cf19e984a93e78234", size = 383488 },
+]
+
+[package.optional-dependencies]
+django = [
+    { name = "django" },
 ]
 
 [[package]]
@@ -88,7 +111,9 @@ dependencies = [
     { name = "django" },
     { name = "django-browser-reload" },
     { name = "django-cotton" },
+    { name = "django-environ" },
     { name = "django-vite" },
+    { name = "lucide", extra = ["django"] },
 ]
 
 [package.metadata]
@@ -96,5 +121,7 @@ requires-dist = [
     { name = "django", specifier = "==6.0" },
     { name = "django-browser-reload", specifier = ">=1.21.0" },
     { name = "django-cotton", specifier = ">=2.6.0" },
+    { name = "django-environ", specifier = ">=0.12.0" },
     { name = "django-vite", specifier = ">=3.1.0" },
+    { name = "lucide", extras = ["django"], specifier = ">=1.1.3" },
 ]
