@@ -1,0 +1,15 @@
+[phases.setup]
+nixPkgs = ["...", "python312", "bun"]  # Bun pour ton package.json, Python 3.12
+
+[phases.install]
+cmds = ["bun install", "uv pip install -r requirements.txt"]  # Ou uv pip install si tu utilises uv
+
+[phases.build]
+cmds = [
+  "bun run build",  # Lance vite build → génère les assets minifiés/purgés dans ./static
+  "python manage.py migrate",
+  "python manage.py collectstatic --noinput"
+]
+
+[start]
+cmd = "gunicorn project.wsgi:application --bind 0.0.0.0:$PORT"
