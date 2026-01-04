@@ -33,7 +33,6 @@ RUN pip install --upgrade pip && \
 
 # Copy specific files and directories (excluding entrypoint to avoid overwrite)
 COPY manage.py ./
-COPY main.py ./
 COPY project/ ./project/
 COPY assets/ ./assets/
 COPY static/ ./static/
