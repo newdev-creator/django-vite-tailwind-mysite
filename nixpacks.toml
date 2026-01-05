@@ -5,7 +5,7 @@ providers = ["python", "node"]
 
 # Bun est supporté nativement par Nixpacks (super rapide !)
 [variables]
-NIXPACKS_NODE_VERSION = "20"  # Optionnel, mais stable pour bun
+NIXPACKS_NODE_VERSION = "24"  # Optionnel, mais stable pour bun
 NIXPACKS_UV_VERSION = "0.4.30"
 NIXPACKS_PYTHON_VERSION = "3.12"
 
