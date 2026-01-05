@@ -15,8 +15,8 @@ NIXPACKS_PYTHON_VERSION = "3.12"
 # 3. Collectstatic (WhiteNoise s'en occupera en prod)
 [phases.build]
 cmds = [
-  "bun install",                  # Installe les deps frontend
-  "bun run build",                # Équivalent à vite build → output dans ./static
+  "npm install",                  # Installe les deps frontend
+  "npm run build",                # Équivalent à vite build → output dans ./static
   "uv sync --no-dev --frozen",  # Installe tes deps Python via uv
   "python manage.py migrate",
   "python manage.py collectstatic --noinput"
