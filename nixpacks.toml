@@ -6,8 +6,13 @@ providers = ["python", "node"]
 # Bun est supporté nativement par Nixpacks (super rapide !)
 [variables]
 NIXPACKS_NODE_VERSION = "20"  # Optionnel, mais stable pour bun
-NIXPACKS_UV_VERSION = "0.4.30"
+# NIXPACKS_UV_VERSION = "0.4.30"
 NIXPACKS_PYTHON_VERSION = "3.12"
+
+# Phases personnalisées pour contourner le bug uv
+[phases.setup]
+# Installe uv directement via le script officiel (rapide et fiable)
+cmds = ["curl -LsSf https://astral.sh/uv/install.sh | sh -s -- --version 0.4.30"]
 
 # Phase de build :
 # 1. Build Vite avec bun (output dans ./static comme configuré dans vite.config.js)
@@ -17,6 +22,7 @@ NIXPACKS_PYTHON_VERSION = "3.12"
 cmds = [
   "bun install",                  # Installe les deps frontend
   "bun run build",                # Équivalent à vite build → output dans ./static
+  "uv sync --no-dev --frozen",  # Installe tes deps Python via uv
   "python manage.py migrate",
   "python manage.py collectstatic --noinput"
 ]
